@@ -1,4 +1,6 @@
-# Welcome to Remix!
+<img src="/app/assets/img/remix_jokes.gif" alt="joke"/>
+
+# Welcome to Remix Jokes App!
 
 - [Remix Docs](https://remix.run/docs)
 
