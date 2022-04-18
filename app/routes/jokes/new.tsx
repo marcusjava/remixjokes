@@ -10,7 +10,8 @@ import {
   Joke,
   User,
 } from "~/utils/validation";
-import { Link, useActionData, useCatch } from "@remix-run/react";
+import { Link, useActionData, useCatch, useTransition } from "@remix-run/react";
+import JokeComponent from "~/components/Joke";
 
 export interface FormFields {
   name: string;
@@ -26,6 +27,18 @@ export interface ActionData {
 const badRequest = (data: ActionData) => {
   return json(data, { status: 400 });
 };
+
+function validateJokeContent(content: string) {
+  if (content.length < 10) {
+    return `That joke is too short`;
+  }
+}
+
+function validateJokeName(name: string) {
+  if (name.length < 3) {
+    return `That joke's name is too short`;
+  }
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await getUserId(request);
@@ -65,6 +78,25 @@ export const action: ActionFunction = async ({
 
 export default function NewJokeRoute() {
   const actionData = useActionData<ActionData>();
+  const transition = useTransition();
+  if (transition.submission) {
+    const name = transition.submission.formData.get("name");
+    const content = transition.submission.formData.get("content");
+    if (
+      typeof name === "string" &&
+      typeof content === "string" &&
+      !validateJokeContent(content) &&
+      !validateJokeName(name)
+    ) {
+      return (
+        <JokeComponent
+          joke={{ name, content }}
+          isOwner={true}
+          canDelete={false}
+        />
+      );
+    }
+  }
   return <NewJoke data={actionData} />;
 }
 

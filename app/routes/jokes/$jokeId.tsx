@@ -11,8 +11,9 @@ import { json, redirect } from "@remix-run/node";
 import { requireUserId, getUserId } from "~/utils/session.server";
 
 export interface LoaderData {
-  joke: JokeType;
+  joke: Pick<JokeType, "name" | "content">;
   isOwner: boolean;
+  canDelete?: boolean;
 }
 
 export const meta: MetaFunction = ({
